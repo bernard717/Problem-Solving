@@ -32,7 +32,7 @@ public class Main {
         bw.write(a[0].name + "\n");
         for(int i = 0; i < n; i++){
             if(temp.equals(a[i].name))
-                continue;
+                continue; 
             else {
                 bw.write(a[i].name + "\n");
                 temp = a[i].name;
