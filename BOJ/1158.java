@@ -25,5 +25,5 @@ public class Main {
         sb.append(">");
 
         System.out.println(sb);
-    }
+    } 
 }
