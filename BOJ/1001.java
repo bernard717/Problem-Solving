@@ -9,4 +9,4 @@ public class Main {
         int b = Integer.parseInt(line[1]);
         System.out.println(a - b);
     }
-}
+} 
