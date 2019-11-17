@@ -26,6 +26,6 @@ public class Main{
         if(s == 0){
             ans--;
         }
-        System.out.println(ans);
+        System.out.println(ans); 
     }
 }
