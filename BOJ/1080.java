@@ -48,7 +48,7 @@ public class Main{
         if(!judge)
             System.out.println(-1);
         else
-            System.out.println(ans);
+            System.out.println(ans); 
 
     }
 }
