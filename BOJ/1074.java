@@ -36,6 +36,6 @@ public class Main{
         int ans = solve(n, r, c);
 
 
-        System.out.print(ans);
+        System.out.print(ans); 
     }
 }
