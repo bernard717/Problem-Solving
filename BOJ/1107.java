@@ -9,7 +9,7 @@ public class Main{
             ans = check[c] ? 0 : 1;
         else{
             while(c > 0){
-                if(check[c % 10])
+                if(check[c % 10]) 
                     return 0;
                 len++;
                 c /= 10;
