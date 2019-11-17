@@ -24,6 +24,6 @@ public class Main {
 
         long ans = (long) ((hm.get(color1) * 10 + hm.get(color2)) * Math.pow(10, hm.get(color3)));
         System.out.println(ans);
-
+ 
     }
 }
