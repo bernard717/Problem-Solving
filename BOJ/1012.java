@@ -33,7 +33,7 @@ public class Main {
                     }
                 }
             }
-        }
+        } 
         return num;
     }
     public static void main(String[] args) throws IOException {
