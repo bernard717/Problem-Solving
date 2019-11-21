@@ -55,6 +55,6 @@ public class Main {
         for(Point p : a){
             sb.append(p.x + " " + p.y + "\n");
         }
-        System.out.print(sb);
+        System.out.print(sb); 
     }
 }
