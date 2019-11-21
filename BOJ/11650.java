@@ -36,7 +36,7 @@ public class Main {
             a[i] = new Point(x,y);
         }
         Arrays.sort(a, new Comparator<Point>() {
-            public int compare(Point o1, Point o2) {
+            public int compare(Point o1, Point o2) { 
                 return o1.compareTo(o2);
             }
         });
