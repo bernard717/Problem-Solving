@@ -22,7 +22,7 @@ class Song implements Comparable<Song>{
             return -1;
         }
         else if(this.genre == o.genre){
-            if(this.play < o.play)
+            if(this.play < o.play) 
                 return -1;
             else if(this.play == o.play){
                 if(this.num > o.num)
