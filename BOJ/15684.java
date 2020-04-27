@@ -1,79 +1,64 @@
-import java.util.*;
-import java.io.*;
-class Main {
-	static int n, m, h;
-	static boolean[][] check;
-	static int ans = -1;
-	static class Pair {
-		int a, b;
-		Pair(int a, int b){
-			this.a = a;
-			this.b = b;
-		}
-	}
-	public static boolean go(){
-		for(int i = 1; i <= n; i++) {
-			int row = 1; 
-			int col = i;
-			while(row <= h) {
-				if(check[row][col]) { 
-					col++; 
-					row++;
-				}
-				else if(check[row][col - 1]) {
-					col--; 
-					row++;
-				}
-				else
-					row++;
-			}
-			if(col != i) return false;
-		}
-		return true;
-	}
-	public static void recur(Pair recent, int currentDepth, int maxDepth) {
-		if(ans != -1 && ans <= currentDepth) return;
-		if(go()) {
-			ans = currentDepth;
-			return;
-		}
-		if(currentDepth == maxDepth) return;
-		for(int i = recent.a; i < h + 1; i++) {
-			for(int j = 1; j < n; j++) {
-				if(i == recent.a && j <= recent.b) continue;
-				if(check[i][j - 1] || check[i][j] || check[i][j + 1]) continue;
-				check[i][j] = true;
-				recur(new Pair(i, j), currentDepth + 1, maxDepth);
-				check[i][j] = false;
-			}
-		}
-	}
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		String[] line = br.readLine().split(" ");
-		n = Integer.parseInt(line[0]);
-		m = Integer.parseInt(line[1]);
-		h = Integer.parseInt(line[2]);
-		check = new boolean[35][15];
-		
-		if(m == 0) {
-			System.out.println(0);
-			return;
-		}
-		
-		for(int i = 0; i < m; i++) {
-			String[] line2 = br.readLine().split(" ");
-			int a = Integer.parseInt(line2[0]);
-			int b = Integer.parseInt(line2[1]);
-			check[a][b] = true;
-		}
-		
-		if(go()) {
-			System.out.println(0);
-			return;
-		}
-		recur(new Pair(1, 1), 0, 3);
-		
-		System.out.println(ans);
-	}
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main{
+    static boolean[][] board ;
+    static int N, M, H;
+    static int ans = Integer.MAX_VALUE;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String[] line = br.readLine().split(" ");
+        N = Integer.parseInt(line[0]);
+        M = Integer.parseInt(line[1]);
+        H = Integer.parseInt(line[2]);
+
+        board = new boolean[H + 1][N + 2];
+        for(int i = 0; i < M; i++){
+            line = br.readLine().split(" ");
+            int a = Integer.parseInt(line[0]);
+            int b = Integer.parseInt(line[1]);
+            board[a][b] = true;
+        }
+        dfs(0, 1, true);
+        if(ans == Integer.MAX_VALUE)
+            ans = -1;
+        System.out.print(ans);
+    }
+    static boolean game(){
+        for(int col = 1; col <= N; col++){
+            int row = 1;
+            int temp = col;
+            while(row <= H) {
+                // 왼쪽에 가로선이 있는 경우
+                if (temp > 1 && board[row][temp - 1])
+                    temp--;
+                else if (temp <= N + 1 && board[row][temp])
+                    temp++;
+                row++;
+            }
+            if(col != temp)
+                return false;
+        }
+        return true;
+    }
+    static void dfs(int sum, int idx, boolean changed){
+        if(sum > 3 || idx > N * H)
+            return;
+        if(changed && game()){
+            ans = Math.min(ans, sum);
+            return;
+        }
+        int row = (idx - 1) / N + 1;
+        int col = idx % N;
+        // 이번 위치에 이미 가로선이 있는 경우
+        if(board[row][col])
+            dfs(sum, idx + 1, false);
+        else{
+            board[row][col] = true;
+            dfs(sum + 1, idx + 1, true);
+            board[row][col] = false;
+            dfs(sum , idx + 1, false);
+        }
+    }
 }
