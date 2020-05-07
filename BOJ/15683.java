@@ -1,188 +1,84 @@
-import java.util.*;
 import java.io.*;
-public class Main {
-    static int[][] a;
-    static int min = Integer.MAX_VALUE;
-    static int n, m;
-    static boolean[][] check;
-    public static void up(int x, int y){
-        for(int i = x - 1; i >= 0; i--){
-            if(a[i][y] != 6)
-                check[i][y] = true;
-            else
-                break;
-        }
+import java.util.*;
+class Main {	
+	static int N, M, ans;
+	static int[][] board;
+	static int[] dx = {-1, 1, 0, 0};
+	static int[] dy = {0, 0, -1, 1};
+	static int[][][] dirs = {{}, {{0}, {1}, {2}, {3}}, {{0, 1}, {2, 3}}, 
+			{{0, 3}, {1, 3}, {0, 2}, {1, 2}}, {{0, 1, 2}, {0, 1, 3}, {0, 2, 3}, {1, 2, 3}}, {{0, 1, 2, 3}}};
+    static int[] dirNum = {0, 4, 2, 4, 4, 1};
+    
+    static class Pair{
+    	int x, y;
+    	public Pair(int x, int y) {
+    		this.x = x;
+    		this.y = y;
+    	}
     }
-    public static void checkup(boolean[][] check, boolean[][] check2, int x, int y){
-        for(int i = x - 1; i >= 0; i--)
-            check[i][y] = check2[i][y];
-    }
-    public static void down(int x, int y){
-        for(int i = x + 1; i < n; i++){
-            if(a[i][y] != 6)
-                check[i][y] = true;
-            else
-                break;
-        }
-    }
-    public static void checkdown(boolean[][] check, boolean[][] check2, int x, int y){
-        for(int i = x + 1; i < n; i++)
-            check[i][y] = check2[i][y];
-    }
-    public static void left(int x, int y){
-        for(int i = y - 1; i >= 0; i--){
-            if(a[x][i] != 6)
-                check[x][i] = true;
-            else
-                break;
-        }
-    }
-    public static void checkleft(boolean[][] check, boolean[][] check2, int x, int y){
-        for(int i = y - 1; i >= 0; i--)
-            check[x][i] = check2[x][i];
-    }
-    public static void right(int x, int y){
-        for(int i = y + 1; i < m; i++){
-            if(a[x][i] != 6)
-                check[x][i] = true;
-            else
-                break;
-        }
-    }
-    public static void checkright(boolean[][] check, boolean[][] check2, int x, int y){
-        for(int i = y + 1; i < m; i++)
-            check[x][i] = check2[x][i];
-    }
-    public static void go(int z, boolean[][] check){
-        if(z == n * m) {
-            int left = 0;
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < m; j++){
-                    if(!check[i][j] && a[i][j] == 0)
-                        left++;
-                }
-            }
-            min = Math.min(left, min);
-            return;
-        }
-        boolean [][] check2 = new boolean[n][m];
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++)
-                check2[i][j] = check[i][j];
-        }
-        int x = z / m;
-        int y = z % m;
-        if(a[x][y] == 0 || a[x][y] == 6)
-            go(z + 1, check);
-        else if(a[x][y] == 1){
-            up(x, y);
-            go(z + 1, check);
-            checkup(check, check2, x, y);
-            down(x, y);
-            go(z + 1, check);
-            checkdown(check, check2, x, y);
-            right(x, y);
-            go(z + 1, check);
-            checkright(check, check2, x, y);
-            left(x, y);
-            go(z + 1, check);
-            checkleft(check, check2, x, y);
-        }
-        else if(a[x][y] == 2){
-            up(x, y);
-            down(x, y);
-            go(z + 1, check);
-            checkup(check, check2, x, y);
-            checkdown(check, check2, x, y);
-            right(x, y);
-            left(x, y);
-            go(z + 1, check);
-            checkright(check, check2, x, y);
-            checkleft(check, check2, x, y);
-        }
-        else if(a[x][y] == 3){
-            up(x, y);
-            left(x, y);
-            go(z + 1, check);
-            checkup(check, check2, x, y);
-            checkleft(check, check2, x, y);
-            up(x, y);
-            right(x, y);
-            go(z + 1, check);
-            checkup(check, check2, x, y);
-            checkright(check, check2, x, y);
-            down(x, y);
-            left(x, y);
-            go(z + 1, check);
-            checkdown(check, check2, x, y);
-            checkleft(check, check2, x, y);
-            down(x, y);
-            right(x, y);
-            go(z + 1, check);
-            checkdown(check, check2, x, y);
-            checkright(check, check2, x, y);
-        }
-        else if(a[x][y] == 4){
-            up(x, y);
-            left(x, y);
-            right(x, y);
-            go(z + 1, check);
-            checkup(check, check2, x, y);
-            checkleft(check, check2, x, y);
-            checkright(check, check2, x, y);
-            up(x, y);
-            right(x, y);
-            down(x, y);
-            go(z + 1, check);
-            checkup(check, check2, x, y);
-            checkright(check, check2, x, y);
-            checkdown(check, check2, x, y);
-            down(x, y);
-            left(x, y);
-            right(x, y);
-            go(z + 1, check);
-            checkdown(check, check2, x, y);
-            checkleft(check, check2, x, y);
-            checkright(check, check2, x, y);
-            down(x, y);
-            up(x, y);
-            left(x, y);
-            go(z + 1, check);
-            checkdown(check, check2, x, y);
-            checkup(check, check2, x, y);
-            checkleft(check, check2, x, y);
-        }
-        else if(a[x][y] == 5){
-            down(x, y);
-            up(x, y);
-            left(x, y);
-            right(x, y);
-            go(z + 1, check);
-            checkdown(check, check2, x, y);
-            checkup(check, check2, x, y);
-            checkleft(check, check2, x, y);
-            checkright(check, check2, x, y);
-        }
-    }
-    public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        
         String[] line = br.readLine().split(" ");
-        n = Integer.parseInt(line[0]);
-        m = Integer.parseInt(line[1]);
-        a = new int[n][m];
-        check = new boolean[n][m];
-        int left = 0;
-        for(int i = 0; i < n; i++){
-            String[] line2 = br.readLine().split(" ");
-            for(int j = 0; j < m; j++) {
-                int what = Integer.parseInt(line2[j]);
-                if(what == 0)
-                    left++;
-                a[i][j] = what;
-            }
+        N = Integer.parseInt(line[0]);
+        M = Integer.parseInt(line[1]);
+        board = new int[N][M];
+        for(int i = 0; i < N; i++) {
+        	line = br.readLine().split(" ");
+        	for(int j = 0; j < M; j++)
+        		board[i][j] = Integer.parseInt(line[j]);
         }
-        go(0, check);
-        System.out.println(min);
+        ans = Integer.MAX_VALUE;
+        dfs(0);
+        System.out.print(ans);
     }
+	static void dfs(int now) {
+		if(now == N * M) {
+			int sum = 0;
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < M; j++) {
+					if(board[i][j] == 0)
+						sum++;
+				}
+			}
+			ans = Math.min(ans,  sum);
+			return;
+		}
+		int x = now / M;
+		int y = now % M;
+		int what = board[x][y];
+		if(what == 0 || what >= 6)
+			dfs(now + 1);
+		else {
+			int num = dirNum[what];
+			HashSet<Pair> changing = new HashSet<>();
+			for(int i = 0; i < num; i++) {
+				changing = calc(x, y, what, i);
+				for(Pair p : changing)
+					board[p.x][p.y] = 7;
+				dfs(now + 1);
+				for(Pair p : changing)
+					board[p.x][p.y] = 0;
+			}
+		}
+	}
+	static HashSet<Pair> calc(int x, int y, int kind, int dir){
+		HashSet<Pair> set = new HashSet<>();
+		for(int i = 0; i < dirs[kind][dir].length; i++) {
+			int nowDir = dirs[kind][dir][i];
+			int nx = x;
+			int ny = y;
+			while(true) {
+				nx = nx + dx[nowDir];
+				ny = ny + dy[nowDir];
+				if(outOfBound(nx,  ny)) break;
+				if(board[nx][ny] == 6) break;
+				if(board[nx][ny] == 0) set.add(new Pair(nx, ny));
+			}
+		}
+		return set;
+	}
+	static boolean outOfBound(int x, int y) {
+		return (x < 0 || y < 0 || x >= N || y >= M);
+	}
 }
