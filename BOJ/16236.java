@@ -1,123 +1,120 @@
-import java.util.*;
 import java.io.*;
-public class Main {
-    static int[][] a;
-    static boolean[][] route;
-    static boolean[][] fish;
-    static int[] dx = {1, -1, 0, 0};
-    static int[] dy = {0, 0, 1, -1};
-    static int n;
-    static boolean[][] check;
-    static int[][] dist;
-    static class Pair{
-        int x, y;
-        Pair(int x, int y){
-            this.x = x;
-            this.y = y;
-        }
-    }
-    static class Pair2{
-        int x, y, z;
-        Pair2(int x, int y, int z){
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    }
-    public static Pair2 bfs(int startX, int startY){
-        check = new boolean[n][n];
-        dist = new int[n][n];
-        Queue<Pair> q = new LinkedList<Pair>();
-        q.add(new Pair(startX, startY));
-        check[startX][startY] = true;
-        dist[startX][startY] = 0;
-        while(!q.isEmpty()) {
-            Pair p = q.remove();
-            int x = p.x;
-            int y = p.y;
-            for (int k = 0; k < 4; k++) {
-                int nx = x + dx[k];
-                int ny = y + dy[k];
-                if (nx >= 0 && nx < n && ny >= 0 && ny < n) {
-                    if (!check[nx][ny] && route[nx][ny]) {
-                        q.add(new Pair(nx, ny));
-                        dist[nx][ny] = dist[x][y] + 1;
-                        check[nx][ny] = true;
-                    }
-                }
-            }
-        }
-        int min = Integer.MAX_VALUE;
-        int eatX = 0, eatY = 0;
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n; j++){
-                if(fish[i][j]){
-                    if(min > dist[i][j] && dist[i][j] != 0) {
-                        min = dist[i][j];
-                        eatX = i;
-                        eatY = j;
-                    }
-                }
-            }
-        }
-        if(min == Integer.MAX_VALUE)
-            return new Pair2(-1, -1, min);
-        fish[eatX][eatY] = false;
-        route[startX][startY] = true;
-        a[startX][startY] = 0;
-        return new Pair2(eatX, eatY, min);
-    }
-    public static int go(int startX, int startY, int eat, int sharkSize, int current, int dist){
-        if(eat == 0)
-            return dist;
-        Pair2 p = bfs(startX, startY);
-        if(p.x == -1)
-            return dist;
-        current++;
-        eat--;
-        dist += p.z;
-        if(sharkSize == current) {
-            sharkSize++;
-            current = 0;
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < n; j++){
-                    if(a[i][j] == sharkSize)
-                        route[i][j] = true;
-                    if(a[i][j] == sharkSize - 1){
-                        fish[i][j] = true;
-                        eat++;
-                    }
-                }
-            }
-        }
-        return go(p.x, p.y, eat, sharkSize, current, dist);
-    }
-    public static void main(String[] args) throws IOException {
-        Scanner sc = new Scanner(System.in);
+import java.util.*;
+class Main {	
+	private static int[] dx = {-1, 1, 0, 0};
+	private static int[] dy = {0, 0, -1, 1};
+	private static class Shark{
+		int x, y, size, eaten;
+		public Shark(int x, int y) {
+			this.x = x;
+			this.y = y;
+			this.size = 2;
+			this.eaten = 0;
+		}
+	}
+	private static class Fish implements Comparable<Fish>{
+		int x, y, dist;
+		public Fish(int x, int y, int dist) {
+			this.x = x;
+			this.y = y;
+			this.dist = dist;
+		}
+		public int compareTo(Fish that) {
+			if(this.dist < that.dist)
+				return -1;
+			else if(this.dist == that.dist) {
+				if(this.x < that.x)
+					return -1;
+				else if(this.x == that.x) {
+					if(this.y < that.y)
+						return -1;
+					else
+						return 1;
+				}
+				else
+					return 1;
+			}
+			else
+				return 1;
+		}
+	}
+	private static class Pair{
+		int x, y;
+		public Pair(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        a = new int[n][n];
-        route = new boolean[n][n];
-        fish = new boolean[n][n];
-        int eat = 0;
-        int startX = 0, startY = 0;
-        for(int i = 0; i < n; i++){
-            String[] line = br.readLine().split(" ");
-            for(int j = 0; j < n; j++) {
-                int what = Integer.parseInt(line[j]);
-                a[i][j] = what;
-                if(what == 9){
-                    startX = i;
-                    startY = j;
-                }
-                if(what <= 2)
-                    route[i][j] = true;
-                if(what < 2 && what > 0){
-                    fish[i][j] = true;
-                    eat++;
-                }
-            }
+        int N = Integer.parseInt(br.readLine());
+        int[][] board = new int[N][N];
+        
+        Shark s = new Shark(0, 0);
+        int fishNum = 0;
+        
+        for(int i = 0; i < N; i++) {
+        	String[] line = br.readLine().split(" ");
+        	for(int j = 0; j < N; j++) {
+        		int temp = Integer.parseInt(line[j]);
+        		board[i][j] = temp;
+        		if(temp == 9)
+        			s = new Shark(i, j);
+        		else if(temp != 0)
+        			fishNum++;
+        	}
         }
-        System.out.println(go(startX, startY, eat, 2, 0, 0));
-    }
+        // 물고기가 없으면 바로 종료
+        if(fishNum == 0) {
+        	System.out.print(0);
+        	return;
+        }
+        int time = 0;
+        PriorityQueue<Fish> toBeEaten = new PriorityQueue<>();
+        while(true) {
+            // 상어에서 다른 칸까지의 거리 계산을 위한 배열
+        	int[][] dist = new int[N][N];
+        	for(int i = 0; i < N; i++) {
+        		for(int j = 0; j < N; j++)
+        			dist[i][j] = -1;
+        	}
+        	toBeEaten = new PriorityQueue<>();
+        	
+        	dist[s.x][s.y] = 0;
+        	Queue<Pair> q = new LinkedList<>();
+        	q.add(new Pair(s.x, s.y));
+        	while(!q.isEmpty()) {
+        		Pair p = q.remove();
+        		for(int k = 0; k < 4; k++) {
+        			int nx = p.x + dx[k];
+        			int ny = p.y + dy[k];
+        			if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+        			if(dist[nx][ny] != -1) continue;
+        			if(board[nx][ny] > s.size) continue;
+        			dist[nx][ny] = dist[p.x][p.y] + 1;
+        			q.add(new Pair(nx, ny));
+                    // 상어보다 작은 물고기는 먹을 수 있으므로 우선순위큐에 집어넣음
+        			if(board[nx][ny] != 0 && board[nx][ny] < s.size)
+        				toBeEaten.add(new Fish(nx, ny, dist[nx][ny]));
+        		}
+        	}
+            // 먹을 물고기가 없으면 종료
+        	if(toBeEaten.size() == 0) {
+        		System.out.print(time);
+        		return;
+        	}
+            // 우선순위큐에서 가장 우선순위 높은 물고기를 뺌
+        	Fish eating = toBeEaten.remove();
+        	time += eating.dist;
+        	board[s.x][s.y] = 0;
+        	s.x = eating.x;
+        	s.y = eating.y;
+        	s.eaten++;
+        	board[s.x][s.y] = 9;
+        	if(s.eaten == s.size) {
+        		s.eaten = 0;
+        		s.size++;
+        	}
+        }
+	}
 }
