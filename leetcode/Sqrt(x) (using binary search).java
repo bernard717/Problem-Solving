@@ -1,16 +1,24 @@
 class Solution {
-    public int[] plusOne(int[] digits) {
-        for(int i = digits.length - 1; i >= 0; i--){
-            if(digits[i] == 9){
-                digits[i] = 0;
+    public int mySqrt(int x) {
+        if(x == 0)
+            return 0;
+        
+        return binary_search(x);
+    }
+    public int binary_search(int x){
+        int st = 1;
+        int en = x;
+        
+        while(st <= en){
+            int mid = st + (en - st) / 2;
+            if(mid < x / mid){
+                st = mid + 1;
             }
-            else{
-                digits[i]++;
-                return digits;
-            }
+            else if(mid > x / mid)
+                en = mid - 1;
+            else
+                return mid;
         }
-        int[] ans = new int[digits.length + 1];
-        ans[0] = 1;
-        return ans;
+        return (st + en) / 2;
     }
 }
